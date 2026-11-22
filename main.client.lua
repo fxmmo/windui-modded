@@ -1158,7 +1158,7 @@ do
 			Title = "Join our Discord server!",
 			TextSize = 20,
 		})
-		local DiscordServerParagraph = DiscordTab:Card({
+		local DiscordServerParagraph = DiscordTab:Paragraph({
 			Title = tostring(Response.guild.name),
 			Desc = tostring(Response.guild.description),
 			Image = "https://cdn.discordapp.com/icons/"
@@ -1179,7 +1179,7 @@ do
 			},
 		})
 	elseif RunService:IsStudio() or not writefile then
-		DiscordTab:Card({
+		DiscordTab:Paragraph({
 			Title = "Discord API is not available in Studio mode.",
 			TextSize = 20,
 			Justify = "Center",
@@ -1203,7 +1203,7 @@ do
 			},
 		})
 	else
-		DiscordTab:Card({
+		DiscordTab:Paragraph({
 			Title = "Failed to fetch Discord server info.",
 			TextSize = 20,
 			Justify = "Center",

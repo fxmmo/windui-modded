@@ -85,7 +85,7 @@ local InfoTab = Window:Tab({
 	Icon = "badge-info",
 })
 
-InfoTab:Card({
+InfoTab:Paragraph({
 	Title = "WindUI",
 	Desc = "WindUI is a open source UI library for Roblox Script Hubs",
 	Buttons = {

@@ -1,6 +1,6 @@
 return {
 	Elements = {
-		Card = require("./Card"),
+		Paragraph = require("./Paragraph"),
 		Button = require("./Button"),
 		Toggle = require("./Toggle"),
 		Slider = require("./Slider"),

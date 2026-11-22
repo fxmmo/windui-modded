@@ -53,7 +53,3 @@ local button = WindUI:AddFloatingButton({
 ```
 
 A instância retornada possui `SetPosition`, `SetVisible`, `SetDraggable`, `Edit` e `Destroy`. O alias `WindUI:CreateFloatingButton(config)` também está disponível. Consulte [docs/FLOATING_BUTTONS.md](docs/FLOATING_BUTTONS.md) para a API completa.
-
-## Cards
-
-O antigo elemento `Paragraph` foi substituído por `Card`. Cards aceitam elementos mistos como botões, inputs, toggles e imagens, com `Position`, `AnchorPoint` e `ElementSize` individuais. Consulte [docs/CARD.md](docs/CARD.md) para exemplos.
