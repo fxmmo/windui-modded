@@ -14,13 +14,46 @@ local function resolvePosition(position)
 	return UDim2.new(1, -72, 1, -72)
 end
 
+local function resolveSize(size, width, height)
+	if typeof(size) == "UDim2" then
+		return size
+	end
+	if typeof(size) == "Vector2" then
+		return UDim2.fromOffset(size.X, size.Y)
+	end
+	local defaultSize = type(size) == "number" and size or 52
+	return UDim2.fromOffset(width or defaultSize, height or defaultSize)
+end
+
 function FloatingButton.New(Config, Parent, WindUI)
 	Config = Config or {}
+	local Style = Config.Style or {}
+	local function option(name, fallback)
+		if Config[name] ~= nil then return Config[name] end
+		if Style[name] ~= nil then return Style[name] end
+		return fallback
+	end
 	local Variant = Config.Variant or "Primary"
-	local Radius = Config.Radius or (Config.FullRounded == false and 12 or 999)
-	local Size = Config.Size or 52
+	local Radius = option("Radius", option("CornerRadius", Config.FullRounded == false and 12 or 999))
+	local Shape = option("Shape", "Squircle")
+	local Size = option("Size", 52)
+	local ButtonSize = resolveSize(Size, option("Width"), option("Height"))
+	local BackgroundColor = option("BackgroundColor3", Variant == "White" and Color3.new(1, 1, 1) or nil)
+	local BackgroundTransparency = option("BackgroundTransparency", Variant == "Secondary" and 0.08 or 0)
+	local OutlineColor = option("OutlineColor3")
+	local OutlineTransparency = option("OutlineTransparency", 0.86)
+	local ShadowColor = option("ShadowColor3", Color3.new(0, 0, 0))
+	local ShadowTransparency = option("ShadowTransparency", 0.78)
+	local HoverTransparency = option("HoverTransparency", Variant == "Secondary" and 0.18 or 0.08)
+	local HoverScale = option("HoverScale", 1.04)
 	local IconData = Creator.Icon(Config.Icon)
-	local IconSize = Config.IconSize or 22
+	local IconSize = option("IconSize", 22)
+	local IconColor = option("IconColor3", Variant == "White" and Color3.new(0, 0, 0) or nil)
+	local IconTransparency = option("IconTransparency", Variant == "White" and 0.35 or 0)
+	local TextColor = option("TextColor3", Variant == "White" and Color3.new(0, 0, 0) or nil)
+	local TextSize = option("TextSize", 14)
+	local Padding = option("Padding", 6)
+	local ZIndex = Config.ZIndex or 100
 	local InitialPosition = resolvePosition(Config.Position)
 
 	local IconFrame
@@ -30,20 +63,19 @@ function FloatingButton.New(Config, Parent, WindUI)
 			Image = IconData[1],
 			ImageRectSize = IconData[2].ImageRectSize,
 			ImageRectOffset = IconData[2].ImageRectPosition,
-			Size = UDim2.fromOffset(IconSize, IconSize),
-			BackgroundTransparency = 1,
-			ThemeTag = {
-				ImageColor3 = Variant == "White" and nil or "Icon",
-			},
-			ImageColor3 = Variant == "White" and Color3.new(0, 0, 0) or nil,
-			ImageTransparency = Variant == "White" and 0.35 or 0,
+				Size = typeof(IconSize) == "Vector2" and UDim2.fromOffset(IconSize.X, IconSize.Y)
+					or UDim2.fromOffset(IconSize, IconSize),
+				BackgroundTransparency = 1,
+				ThemeTag = IconColor and nil or { ImageColor3 = "Icon" },
+				ImageColor3 = IconColor,
+				ImageTransparency = IconTransparency,
 		})
 	end
 
 	local Button = New("TextButton", {
 		Name = Config.Name or "FloatingButton",
 		Parent = Parent,
-		Size = UDim2.fromOffset(Size, Size),
+			Size = ButtonSize,
 		Position = InitialPosition,
 		AnchorPoint = Config.AnchorPoint or Vector2.new(0.5, 0.5),
 		ZIndex = Config.ZIndex or 100,
@@ -58,41 +90,40 @@ function FloatingButton.New(Config, Parent, WindUI)
 			Name = "Shadow",
 			Size = UDim2.new(1, 5, 1, 5),
 			AnchorPoint = Vector2.new(0.5, 0.5),
-			Position = UDim2.fromScale(0.5, 0.5),
-			ImageColor3 = Color3.new(0, 0, 0),
-			ImageTransparency = 0.78,
-			ZIndex = (Config.ZIndex or 100) - 2,
+				Position = UDim2.fromScale(0.5, 0.5),
+				ImageColor3 = ShadowColor,
+				ImageTransparency = ShadowTransparency,
+				ZIndex = ZIndex - 2,
 		}),
 		Creator.NewRoundFrame(Radius, "Squircle", {
 			Name = "Background",
 			Size = UDim2.fromScale(1, 1),
-			ThemeTag = {
-				ImageColor3 = Variant == "White" and nil or "Button",
-			},
-			ImageColor3 = Variant == "White" and Color3.new(1, 1, 1) or nil,
-			ImageTransparency = Variant == "Secondary" and 0.08 or 0,
-			ZIndex = (Config.ZIndex or 100) - 1,
+				ThemeTag = BackgroundColor and nil or { ImageColor3 = "Button" },
+				ImageColor3 = BackgroundColor,
+				ImageTransparency = BackgroundTransparency,
+				ZIndex = ZIndex - 1,
 		}),
-		Creator.NewRoundFrame(Radius, "SquircleGlass", {
+			Creator.NewRoundFrame(Radius, option("OutlineShape", "SquircleGlass"), {
 			Name = "Outline",
 			Size = UDim2.new(1, 1, 1, 1),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Position = UDim2.fromScale(0.5, 0.5),
-			ThemeTag = { ImageColor3 = "White" },
-			ImageTransparency = 0.86,
-			ZIndex = Config.ZIndex or 100,
+				ThemeTag = OutlineColor and nil or { ImageColor3 = "White" },
+				ImageColor3 = OutlineColor,
+				ImageTransparency = OutlineTransparency,
+			ZIndex = ZIndex,
 		}),
 		New("Frame", {
 			Name = "Content",
 			Size = UDim2.fromScale(1, 1),
 			BackgroundTransparency = 1,
-			ZIndex = (Config.ZIndex or 100) + 1,
+				ZIndex = ZIndex + 1,
 		}, {
 			New("UIListLayout", {
 			FillDirection = "Horizontal",
 			HorizontalAlignment = "Center",
 			VerticalAlignment = "Center",
-			Padding = UDim.new(0, 6),
+				Padding = UDim.new(0, Padding),
 		}),
 			IconFrame,
 			Config.Title and New("TextLabel", {
@@ -101,10 +132,10 @@ function FloatingButton.New(Config, Parent, WindUI)
 				AutomaticSize = "XY",
 				FontFace = Font.new(Creator.Font, Enum.FontWeight.SemiBold),
 				Text = tostring(Config.Title),
-				TextSize = Config.TextSize or 14,
-				ThemeTag = { TextColor3 = Variant == "Primary" and "White" or "Text" },
-				TextColor3 = Variant == "White" and Color3.new(0, 0, 0) or nil,
-				ZIndex = (Config.ZIndex or 100) + 2,
+					TextSize = TextSize,
+					ThemeTag = TextColor and nil or { TextColor3 = Variant == "Primary" and "White" or "Text" },
+					TextColor3 = TextColor,
+					ZIndex = ZIndex + 2,
 			}) or nil,
 		}),
 	})
@@ -125,11 +156,11 @@ function FloatingButton.New(Config, Parent, WindUI)
 	Floating.DragModule = DragModule
 
 	Creator.AddSignal(Button.MouseEnter, function()
-		Tween(Button.Background, 0.12, { ImageTransparency = Variant == "Secondary" and 0.18 or 0.08 }):Play()
-		Tween(Button.UIScale, 0.12, { Scale = 1.04 }):Play()
+		Tween(Button.Background, 0.12, { ImageTransparency = HoverTransparency }):Play()
+		Tween(Button.UIScale, 0.12, { Scale = HoverScale }):Play()
 	end)
 	Creator.AddSignal(Button.MouseLeave, function()
-		Tween(Button.Background, 0.12, { ImageTransparency = Variant == "Secondary" and 0.08 or 0 }):Play()
+		Tween(Button.Background, 0.12, { ImageTransparency = BackgroundTransparency }):Play()
 		Tween(Button.UIScale, 0.12, { Scale = 1 }):Play()
 	end)
 	Creator.AddSignal(Button.InputBegan, function(input)
@@ -180,6 +211,12 @@ function FloatingButton.New(Config, Parent, WindUI)
 	function Floating:GetPosition()
 		return Button.Position
 	end
+	function Floating:SetSize(size, height)
+		if not self.Destroyed then
+			Button.Size = resolveSize(size, typeof(size) == "number" and size or nil, height)
+		end
+		return self
+	end
 	function Floating:SetVisible(value)
 		if not self.Destroyed then Button.Visible = value ~= false end
 		return self
@@ -191,6 +228,11 @@ function FloatingButton.New(Config, Parent, WindUI)
 	function Floating:Edit(values)
 		values = values or {}
 		if values.Position then self:SetPosition(values.Position) end
+		if values.Size then self:SetSize(values.Size, values.Height) end
+		if values.Width or values.Height then
+			local currentSize = Button.AbsoluteSize
+			Button.Size = UDim2.fromOffset(values.Width or currentSize.X, values.Height or currentSize.Y)
+		end
 		if values.Visible ~= nil then self:SetVisible(values.Visible) end
 		if values.Callback then Config.Callback = values.Callback end
 		if values.Title and Button.Content.Title then Button.Content.Title.Text = tostring(values.Title) end
