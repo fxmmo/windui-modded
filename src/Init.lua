@@ -447,13 +447,4 @@ function WindUI:CreateWindow(Config)
 	return Window
 end
 
--- Compatibility alias: allows WindUI:Tab(...) after WindUI:CreateWindow(...).
-function WindUI:Tab(TabConfig)
-	if not WindUI.Window then
-		warn("[ WindUI ] Create a window before creating a tab")
-		return nil
-	end
-	return WindUI.Window:Tab(TabConfig or {})
-end
-
 return WindUI
