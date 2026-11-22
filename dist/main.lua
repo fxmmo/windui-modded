@@ -40137,4 +40137,13 @@ end
 return h
 end
 
+
+function aa.Tab(az,aA)
+if not aa.Window then
+warn"[ WindUI ] Create a window before creating a tab"
+return nil
+end
+return aa.Window:Tab(aA or{})
+end
+
 return aa
