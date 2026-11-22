@@ -2,6 +2,7 @@ local FloatingButton = {}
 local Creator = require("../../modules/Creator")
 local New = Creator.New
 local Tween = Creator.Tween
+local UserInputService = game:GetService("UserInputService")
 
 local function resolvePosition(position)
 	if typeof(position) == "UDim2" then
@@ -113,6 +114,10 @@ function FloatingButton.New(Config, Parent, WindUI)
 		Destroyed = false,
 		Dragging = false,
 	}
+	local PressedInput = nil
+	local PressStart = nil
+	local PressMoved = false
+	local CLICK_TOLERANCE = 8
 
 	local DragModule = Creator.Drag(Button, nil, function(dragging)
 		Floating.Dragging = dragging
@@ -127,9 +132,43 @@ function FloatingButton.New(Config, Parent, WindUI)
 		Tween(Button.Background, 0.12, { ImageTransparency = Variant == "Secondary" and 0.08 or 0 }):Play()
 		Tween(Button.UIScale, 0.12, { Scale = 1 }):Play()
 	end)
-	Creator.AddSignal(Button.MouseButton1Click, function()
-		if not Floating.Dragging and Config.Callback then
-			Creator.SafeCallback(Config.Callback, Floating)
+	Creator.AddSignal(Button.InputBegan, function(input)
+		if
+			input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch
+		then
+			PressedInput = input
+			PressStart = input.Position
+			PressMoved = false
+		end
+	end)
+	Creator.AddSignal(UserInputService.InputChanged, function(input)
+		if not PressedInput or PressMoved then
+			return
+		end
+		if
+			(input.UserInputType == Enum.UserInputType.MouseMovement
+				or input.UserInputType == Enum.UserInputType.Touch)
+			and (input == PressedInput or PressedInput.UserInputType == Enum.UserInputType.MouseButton1)
+		then
+			PressMoved = (input.Position - PressStart).Magnitude >= CLICK_TOLERANCE
+		end
+	end)
+	Creator.AddSignal(UserInputService.InputEnded, function(input)
+		if not PressedInput then
+			return
+		end
+		local sameInput = input == PressedInput
+			or (PressedInput.UserInputType == Enum.UserInputType.MouseButton1
+				and input.UserInputType == Enum.UserInputType.MouseButton1)
+		if sameInput then
+			local ShouldCallback = not PressMoved
+			PressedInput = nil
+			PressStart = nil
+			PressMoved = false
+			if ShouldCallback and Config.Callback and not Floating.Destroyed then
+				Creator.SafeCallback(Config.Callback, Floating)
+			end
 		end
 	end)
 

@@ -28268,50 +28268,51 @@ local aa={}
 local ab=a.load'j'
 local ac=ab.New
 local ad=ab.Tween
+local ae=game:GetService"UserInputService"
 
-local function resolvePosition(ae)
-if typeof(ae)=="UDim2"then
-return ae
+local function resolvePosition(af)
+if typeof(af)=="UDim2"then
+return af
 end
-if typeof(ae)=="Vector2"then
-return UDim2.fromOffset(ae.X,ae.Y)
+if typeof(af)=="Vector2"then
+return UDim2.fromOffset(af.X,af.Y)
 end
 return UDim2.new(1,-72,1,-72)
 end
 
-function aa.New(ae,af,ag)
-ae=ae or{}
-local ah=ae.Variant or"Primary"
-local ai=ae.Radius or(ae.FullRounded==false and 12 or 999)
-local aj=ae.Size or 52
-local ak=ab.Icon(ae.Icon)
-local al=ae.IconSize or 22
-local am=resolvePosition(ae.Position)
+function aa.New(af,ag,ah)
+af=af or{}
+local ai=af.Variant or"Primary"
+local aj=af.Radius or(af.FullRounded==false and 12 or 999)
+local ak=af.Size or 52
+local al=ab.Icon(af.Icon)
+local am=af.IconSize or 22
+local an=resolvePosition(af.Position)
 
-local an
-if ak then
-an=ac("ImageLabel",{
+local ao
+if al then
+ao=ac("ImageLabel",{
 Name="Icon",
-Image=ak[1],
-ImageRectSize=ak[2].ImageRectSize,
-ImageRectOffset=ak[2].ImageRectPosition,
-Size=UDim2.fromOffset(al,al),
+Image=al[1],
+ImageRectSize=al[2].ImageRectSize,
+ImageRectOffset=al[2].ImageRectPosition,
+Size=UDim2.fromOffset(am,am),
 BackgroundTransparency=1,
 ThemeTag={
-ImageColor3=ah=="White"and nil or"Icon",
+ImageColor3=ai=="White"and nil or"Icon",
 },
-ImageColor3=ah=="White"and Color3.new(0,0,0)or nil,
-ImageTransparency=ah=="White"and 0.35 or 0,
+ImageColor3=ai=="White"and Color3.new(0,0,0)or nil,
+ImageTransparency=ai=="White"and 0.35 or 0,
 })
 end
 
-local ao=ac("TextButton",{
-Name=ae.Name or"FloatingButton",
-Parent=af,
-Size=UDim2.fromOffset(aj,aj),
-Position=am,
-AnchorPoint=ae.AnchorPoint or Vector2.new(0.5,0.5),
-ZIndex=ae.ZIndex or 100,
+local ap=ac("TextButton",{
+Name=af.Name or"FloatingButton",
+Parent=ag,
+Size=UDim2.fromOffset(ak,ak),
+Position=an,
+AnchorPoint=af.AnchorPoint or Vector2.new(0.5,0.5),
+ZIndex=af.ZIndex or 100,
 BackgroundTransparency=1,
 Text="",
 Active=true,
@@ -28319,39 +28320,39 @@ Active=true,
 ac("UIScale",{
 Scale=1,
 }),
-ab.NewRoundFrame(ai,"Squircle",{
+ab.NewRoundFrame(aj,"Squircle",{
 Name="Shadow",
 Size=UDim2.new(1,5,1,5),
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.fromScale(0.5,0.5),
 ImageColor3=Color3.new(0,0,0),
 ImageTransparency=0.78,
-ZIndex=(ae.ZIndex or 100)-2,
+ZIndex=(af.ZIndex or 100)-2,
 }),
-ab.NewRoundFrame(ai,"Squircle",{
+ab.NewRoundFrame(aj,"Squircle",{
 Name="Background",
 Size=UDim2.fromScale(1,1),
 ThemeTag={
-ImageColor3=ah=="White"and nil or"Button",
+ImageColor3=ai=="White"and nil or"Button",
 },
-ImageColor3=ah=="White"and Color3.new(1,1,1)or nil,
-ImageTransparency=ah=="Secondary"and 0.08 or 0,
-ZIndex=(ae.ZIndex or 100)-1,
+ImageColor3=ai=="White"and Color3.new(1,1,1)or nil,
+ImageTransparency=ai=="Secondary"and 0.08 or 0,
+ZIndex=(af.ZIndex or 100)-1,
 }),
-ab.NewRoundFrame(ai,"SquircleGlass",{
+ab.NewRoundFrame(aj,"SquircleGlass",{
 Name="Outline",
 Size=UDim2.new(1,1,1,1),
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.fromScale(0.5,0.5),
 ThemeTag={ImageColor3="White"},
 ImageTransparency=0.86,
-ZIndex=ae.ZIndex or 100,
+ZIndex=af.ZIndex or 100,
 }),
 ac("Frame",{
 Name="Content",
 Size=UDim2.fromScale(1,1),
 BackgroundTransparency=1,
-ZIndex=(ae.ZIndex or 100)+1,
+ZIndex=(af.ZIndex or 100)+1,
 },{
 ac("UIListLayout",{
 FillDirection="Horizontal",
@@ -28359,77 +28360,115 @@ HorizontalAlignment="Center",
 VerticalAlignment="Center",
 Padding=UDim.new(0,6),
 }),
-an,
-ae.Title and ac("TextLabel",{
+ao,
+af.Title and ac("TextLabel",{
 Name="Title",
 BackgroundTransparency=1,
 AutomaticSize="XY",
 FontFace=Font.new(ab.Font,Enum.FontWeight.SemiBold),
-Text=tostring(ae.Title),
-TextSize=ae.TextSize or 14,
-ThemeTag={TextColor3=ah=="Primary"and"White"or"Text"},
-TextColor3=ah=="White"and Color3.new(0,0,0)or nil,
-ZIndex=(ae.ZIndex or 100)+2,
+Text=tostring(af.Title),
+TextSize=af.TextSize or 14,
+ThemeTag={TextColor3=ai=="Primary"and"White"or"Text"},
+TextColor3=ai=="White"and Color3.new(0,0,0)or nil,
+ZIndex=(af.ZIndex or 100)+2,
 })or nil,
 }),
 })
 
-local ap={
-Button=ao,
+local aq={
+Button=ap,
 Destroyed=false,
 Dragging=false,
 }
+local ar
+local as
+local at=false
+local au=8
 
-local aq=ab.Drag(ao,nil,function(aq)
-ap.Dragging=aq
+local av=ab.Drag(ap,nil,function(av)
+aq.Dragging=av
 end)
-ap.DragModule=aq
+aq.DragModule=av
 
-ab.AddSignal(ao.MouseEnter,function()
-ad(ao.Background,0.12,{ImageTransparency=ah=="Secondary"and 0.18 or 0.08}):Play()
-ad(ao.UIScale,0.12,{Scale=1.04}):Play()
+ab.AddSignal(ap.MouseEnter,function()
+ad(ap.Background,0.12,{ImageTransparency=ai=="Secondary"and 0.18 or 0.08}):Play()
+ad(ap.UIScale,0.12,{Scale=1.04}):Play()
 end)
-ab.AddSignal(ao.MouseLeave,function()
-ad(ao.Background,0.12,{ImageTransparency=ah=="Secondary"and 0.08 or 0}):Play()
-ad(ao.UIScale,0.12,{Scale=1}):Play()
+ab.AddSignal(ap.MouseLeave,function()
+ad(ap.Background,0.12,{ImageTransparency=ai=="Secondary"and 0.08 or 0}):Play()
+ad(ap.UIScale,0.12,{Scale=1}):Play()
 end)
-ab.AddSignal(ao.MouseButton1Click,function()
-if not ap.Dragging and ae.Callback then
-ab.SafeCallback(ae.Callback,ap)
+ab.AddSignal(ap.InputBegan,function(aw)
+if
+aw.UserInputType==Enum.UserInputType.MouseButton1
+or aw.UserInputType==Enum.UserInputType.Touch
+then
+ar=aw
+as=aw.Position
+at=false
+end
+end)
+ab.AddSignal(ae.InputChanged,function(aw)
+if not ar or at then
+return
+end
+if
+(aw.UserInputType==Enum.UserInputType.MouseMovement
+or aw.UserInputType==Enum.UserInputType.Touch)
+and(aw==ar or ar.UserInputType==Enum.UserInputType.MouseButton1)
+then
+at=(aw.Position-as).Magnitude>=au
+end
+end)
+ab.AddSignal(ae.InputEnded,function(aw)
+if not ar then
+return
+end
+local ax=aw==ar
+or(ar.UserInputType==Enum.UserInputType.MouseButton1
+and aw.UserInputType==Enum.UserInputType.MouseButton1)
+if ax then
+local ay=not at
+ar=nil
+as=nil
+at=false
+if ay and af.Callback and not aq.Destroyed then
+ab.SafeCallback(af.Callback,aq)
+end
 end
 end)
 
-function ap.SetPosition(ar,as)
-if ar.Destroyed then return ar end
-ao.Position=resolvePosition(as)
-return ar
+function aq.SetPosition(aw,ax)
+if aw.Destroyed then return aw end
+ap.Position=resolvePosition(ax)
+return aw
 end
-function ap.GetPosition(ar)
-return ao.Position
+function aq.GetPosition(aw)
+return ap.Position
 end
-function ap.SetVisible(ar,as)
-if not ar.Destroyed then ao.Visible=as~=false end
-return ar
+function aq.SetVisible(aw,ax)
+if not aw.Destroyed then ap.Visible=ax~=false end
+return aw
 end
-function ap.SetDraggable(ar,as)
-aq:Set(as~=false)
-return ar
+function aq.SetDraggable(aw,ax)
+av:Set(ax~=false)
+return aw
 end
-function ap.Edit(ar,as)
-as=as or{}
-if as.Position then ar:SetPosition(as.Position)end
-if as.Visible~=nil then ar:SetVisible(as.Visible)end
-if as.Callback then ae.Callback=as.Callback end
-if as.Title and ao.Content.Title then ao.Content.Title.Text=tostring(as.Title)end
-return ar
+function aq.Edit(aw,ax)
+ax=ax or{}
+if ax.Position then aw:SetPosition(ax.Position)end
+if ax.Visible~=nil then aw:SetVisible(ax.Visible)end
+if ax.Callback then af.Callback=ax.Callback end
+if ax.Title and ap.Content.Title then ap.Content.Title.Text=tostring(ax.Title)end
+return aw
 end
-function ap.Destroy(ar)
-if ar.Destroyed then return end
-ar.Destroyed=true
-ao:Destroy()
+function aq.Destroy(aw)
+if aw.Destroyed then return end
+aw.Destroyed=true
+ap:Destroy()
 end
 
-return ap
+return aq
 end
 
 return aa end function a.C()
