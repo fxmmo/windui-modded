@@ -1,6 +1,5 @@
 return { -- lucide
 	Tab = "table-of-contents",
-	Paragraph = "type",
 	Button = "square-mouse-pointer",
 	Toggle = "toggle-right",
 	Slider = "sliders-horizontal",

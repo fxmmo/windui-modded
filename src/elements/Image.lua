@@ -30,9 +30,10 @@ function Element:New(Config)
         "Image",
         false
     )
-    if MainImage and MainImage.Parent then
-        MainImage.Parent = Config.Parent
-        MainImage.Size = UDim2.new(1,0,0,0)
+	if MainImage and MainImage.Parent then
+		MainImage.Parent = Config.Parent
+		ImageModule.ImageFrame = MainImage
+		MainImage.Size = UDim2.new(1,0,0,0)
         MainImage.BackgroundTransparency = 1
         
         -- local MainImage = New("ImageLabel", {

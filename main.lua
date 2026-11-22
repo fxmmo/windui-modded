@@ -275,7 +275,7 @@ local Tabs = {
     LockedTab5 = Window:Tab({ Title = "loc:LOCKED_TAB", Icon = "bird", Locked = true, }),
 }
 
--- Tabs.Elements:Paragraph({
+-- Tabs.Elements:Card({
 --     Title = "Interactive Components",
 --     Desc = "Explore WindUI's powerful elements",
 --     Image = "component",
@@ -474,7 +474,7 @@ ElementsSection:Code({
     end
 })
 
-Tabs.Appearance:Paragraph({
+Tabs.Appearance:Card({
     Title = "Customize Interface",
     Desc = "Personalize your experience",
     Image = "palette",
@@ -566,7 +566,7 @@ Tabs.Appearance:Button({
     end
 })
 
-Tabs.Config:Paragraph({
+Tabs.Config:Card({
     Title = "Configuration Manager",
     Desc = "Save and load your settings",
     Image = "save",
@@ -670,7 +670,7 @@ if ConfigManager then
                     Duration = 5
                 })
                 
-                Tabs.Config:Paragraph({
+                Tabs.Config:Card({
                     Title = "Player Data",
                     Desc = string.format("Name: %s\nLevel: %d\nInventory: %s", 
                         MyPlayerData.name, 
@@ -691,7 +691,7 @@ if ConfigManager then
     Tabs.Config:Space({ Columns = 0 })
 
 else
-    Tabs.Config:Paragraph({
+    Tabs.Config:Card({
         Title = "Config Manager Not Available",
         Desc = "This feature requires ConfigManager",
         Image = "alert-triangle",
@@ -702,7 +702,7 @@ end
 
 
 local footerSection = Window:Section({ Title = "WindUI " .. WindUI.Version })
-Tabs.Config:Paragraph({
+Tabs.Config:Card({
     Title = "Github Repository",
     Desc = "github.com/Footagesus/WindUI",
     Image = "github",
