@@ -53,7 +53,8 @@ function FloatingButton.New(Config, Parent, WindUI)
 	local TextColor = option("TextColor3", Variant == "White" and Color3.new(0, 0, 0) or nil)
 	local TextSize = option("TextSize", 14)
 	local Padding = option("Padding", 6)
-	local ZIndex = Config.ZIndex or 100
+		-- Keep floating buttons behind the window by default. Users can override this with Config.ZIndex.
+		local ZIndex = Config.ZIndex ~= nil and Config.ZIndex or -100
 	local InitialPosition = resolvePosition(Config.Position)
 
 	local IconFrame
@@ -78,7 +79,7 @@ function FloatingButton.New(Config, Parent, WindUI)
 			Size = ButtonSize,
 		Position = InitialPosition,
 		AnchorPoint = Config.AnchorPoint or Vector2.new(0.5, 0.5),
-		ZIndex = Config.ZIndex or 100,
+			ZIndex = ZIndex,
 		BackgroundTransparency = 1,
 		Text = "",
 		Active = true,

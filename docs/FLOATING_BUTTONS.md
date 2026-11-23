@@ -58,6 +58,6 @@ local StyledButton = WindUI:AddFloatingButton({
 })
 ```
 
-Também estão disponíveis `CornerRadius`, `Shape`, `OutlineShape`, `IconSize`, `IconTransparency`, `ZIndex`, `FullRounded`, `Variant`, `Width` e `Height`.
+Também estão disponíveis `CornerRadius`, `Shape`, `OutlineShape`, `IconSize`, `IconTransparency`, `ZIndex`, `FullRounded`, `Variant`, `Width` e `Height`. Por padrão, o botão usa `ZIndex = -100` e fica atrás da janela. Para colocá-lo acima de outros elementos, defina um `ZIndex` maior manualmente.
 
 Também existe o alias `WindUI:CreateFloatingButton(config)`.

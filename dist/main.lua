@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66  |  2026-11-22  |  WindUI fork with draggable floating buttons and callbacks
+    v1.6.66  |  2026-11-23  |  WindUI fork with draggable floating buttons and callbacks
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -28319,7 +28319,8 @@ local ay=option("IconTransparency",aj=="White"and 0.35 or 0)
 local az=option("TextColor3",aj=="White"and Color3.new(0,0,0)or nil)
 local aA=option("TextSize",14)
 local aB=option("Padding",6)
-local b=af.ZIndex or 100
+
+local b=af.ZIndex~=nil and af.ZIndex or-100
 local d=resolvePosition(af.Position)
 
 local f
@@ -28344,7 +28345,7 @@ Parent=ag,
 Size=am,
 Position=d,
 AnchorPoint=af.AnchorPoint or Vector2.new(0.5,0.5),
-ZIndex=af.ZIndex or 100,
+ZIndex=b,
 BackgroundTransparency=1,
 Text="",
 Active=true,
