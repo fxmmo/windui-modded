@@ -29849,9 +29849,16 @@ af.Folder,
 true,
 af.IconThemed
 )
-ah.Size=UDim2.new(0,22,0,22)
+local ar=af.IconSize or 22
+ah.Size=UDim2.new(0,ar,0,ar)
 ah.LayoutOrder=-1
 ah.Parent=ag.Button.TextButton
+end
+end
+
+function ag.SetIconSize(ap,aq)
+if ah then
+ah.Size=UDim2.new(0,aq,0,aq)
 end
 end
 
@@ -29973,6 +29980,7 @@ end
 
 
 return aa end function a.I()
+
 local aa={}
 
 local ab=a.load'j'
@@ -38836,6 +38844,9 @@ end
 
 if x then
 x.Size=H
+end
+if aw.OpenButtonMain and aw.OpenButtonMain.SetIconSize then
+aw.OpenButtonMain:SetIconSize(aw.IconSize)
 end
 end
 

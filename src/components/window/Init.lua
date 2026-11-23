@@ -1312,6 +1312,9 @@ return function(Config)
 		if WindowIcon then
 			WindowIcon.Size = NewSize
 		end
+		if Window.OpenButtonMain and Window.OpenButtonMain.SetIconSize then
+			Window.OpenButtonMain:SetIconSize(Window.IconSize)
+		end
 	end
 
 	function Window:Open()

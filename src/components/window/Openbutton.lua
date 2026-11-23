@@ -160,9 +160,16 @@ function OpenButton.New(Window)
                 true,
                 Window.IconThemed
             )
-            Icon.Size = UDim2.new(0,22,0,22)
+            local IconSize = Window.IconSize or 22
+            Icon.Size = UDim2.new(0, IconSize, 0, IconSize)
             Icon.LayoutOrder = -1
             Icon.Parent = OpenButtonMain.Button.TextButton
+        end
+    end
+
+    function OpenButtonMain:SetIconSize(Size)
+        if Icon then
+            Icon.Size = UDim2.new(0, Size, 0, Size)
         end
     end
     
