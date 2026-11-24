@@ -26033,12 +26033,12 @@ Text="",
 end
 
 local m=b.NewRoundFrame(f.UICorner,"Squircle",{
-Size=UDim2.new(0,0,1,0),
+Size=UDim2.new(1,0,0,3),
+Position=UDim2.new(0,0,1,-3),
 ThemeTag={
 ImageTransparency="NotificationDurationTransparency",
 ImageColor3="NotificationDuration",
 },
-
 })
 
 local p=d("Frame",{
@@ -26112,29 +26112,6 @@ ImageColor3="Notification2",
 ImageTransparency="Notification2Transparency",
 },
 }),
-d("Frame",{
-Size=UDim2.new(1,0,1,0),
-BackgroundTransparency=1,
-Name="DurationFrame",
-},{
-
-
-
-
-
-
-d("Frame",{
-Size=UDim2.new(1,0,1,0),
-BackgroundTransparency=1,
-ClipsDescendants=true,
-},{
-m,
-}),
-
-
-
-
-}),
 d("ImageLabel",{
 Name="Background",
 Image=h.Background,
@@ -26152,6 +26129,7 @@ CornerRadius=UDim.new(0,f.UICorner),
 p,
 i,
 l,
+m,
 })
 
 local u=d("Frame",{
@@ -26189,11 +26167,11 @@ Enum.EasingDirection.Out
 ):Play()
 e(r,0.45,{Position=UDim2.new(0,0,1,0)},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 if h.Duration then
-m.Size=UDim2.new(0,r.DurationFrame.AbsoluteSize.X,1,0)
+m.Size=UDim2.new(1,0,0,3)
 e(
-r.DurationFrame.Frame,
+m,
 h.Duration,
-{Size=UDim2.new(0,0,1,0)},
+{Size=UDim2.new(0,0,0,3)},
 Enum.EasingStyle.Linear,
 Enum.EasingDirection.InOut
 ):Play()
