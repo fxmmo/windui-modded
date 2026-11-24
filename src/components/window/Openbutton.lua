@@ -193,7 +193,45 @@ function OpenButton.New(Window)
         Tween(Button.TextButton, .1, {BackgroundTransparency = 1}):Play()
     end)
     
+    local CanDrag = true
+    local HideDragButton = false
+    local BodyDragModule
+    local PressedInput
+    local PressStart
+    local PressMoved = false
+    local ClickTolerance = 8
     local DragModule = Creator.Drag(Container)
+
+    Creator.AddSignal(Button.TextButton.InputBegan, function(Input)
+        if not HideDragButton then return end
+        if Input.UserInputType == Enum.UserInputType.MouseButton1
+            or Input.UserInputType == Enum.UserInputType.Touch then
+            PressedInput = Input
+            PressStart = Input.Position
+            PressMoved = false
+        end
+    end)
+    Creator.AddSignal(UserInputService.InputChanged, function(Input)
+        if not HideDragButton or not PressedInput or PressMoved then return end
+        if (Input.UserInputType == Enum.UserInputType.MouseMovement
+            or Input.UserInputType == Enum.UserInputType.Touch)
+            and (Input == PressedInput or PressedInput.UserInputType == Enum.UserInputType.MouseButton1) then
+            PressMoved = (Input.Position - PressStart).Magnitude >= ClickTolerance
+        end
+    end)
+    Creator.AddSignal(UserInputService.InputEnded, function(Input)
+        if not HideDragButton or not PressedInput then return end
+        local SameInput = Input == PressedInput
+            or (PressedInput.UserInputType == Enum.UserInputType.MouseButton1
+                and Input.UserInputType == Enum.UserInputType.MouseButton1)
+        if SameInput then
+            local ShouldOpen = not PressMoved
+            PressedInput = nil
+            PressStart = nil
+            PressMoved = false
+			if ShouldOpen then Window:Open() end
+        end
+    end)
     
     
     function OpenButtonMain:Visible(v)
@@ -202,6 +240,23 @@ function OpenButton.New(Window)
     
     function OpenButtonMain:SetScale(scale)
         UIScale.Scale = scale
+    end
+
+    function OpenButtonMain:SetHideDragButton(value)
+        HideDragButton = value == true
+        OpenButtonMain.HideDragButton = HideDragButton
+        Drag.Visible = not HideDragButton
+        Divider.Visible = not HideDragButton
+        if HideDragButton then
+            if DragModule then DragModule:Set(false) end
+            if not BodyDragModule then
+                BodyDragModule = Creator.Drag(Container, { Container, Button.TextButton })
+            end
+            BodyDragModule:Set(CanDrag)
+        else
+            if BodyDragModule then BodyDragModule:Set(false) end
+            if DragModule then DragModule:Set(CanDrag) end
+        end
     end
     
     function OpenButtonMain:Edit(OpenButtonConfig)
@@ -212,6 +267,7 @@ function OpenButton.New(Window)
             Position = OpenButtonConfig.Position,
             OnlyIcon = OpenButtonConfig.OnlyIcon or false,
             Draggable = OpenButtonConfig.Draggable or nil,
+            HideDragButton = OpenButtonConfig.HideDragButton == true,
             OnlyMobile = OpenButtonConfig.OnlyMobile,
             CornerRadius = OpenButtonConfig.CornerRadius or UDim.new(1, 0),
             StrokeThickness = OpenButtonConfig.StrokeThickness or 2,
@@ -233,14 +289,16 @@ function OpenButton.New(Window)
         end
         
         
-        if OpenButtonModule.Draggable == false and Drag and Divider then
-            Drag.Visible = OpenButtonModule.Draggable
-            Divider.Visible = OpenButtonModule.Draggable
-            
-            if DragModule then
-                DragModule:Set(OpenButtonModule.Draggable)
-            end
+        if OpenButtonModule.Draggable == false then
+            CanDrag = false
         end
+        if DragModule then
+            DragModule:Set(CanDrag and not HideDragButton)
+        end
+        if BodyDragModule then
+            BodyDragModule:Set(CanDrag and HideDragButton)
+        end
+        OpenButtonMain:SetHideDragButton(OpenButtonModule.HideDragButton)
         
         if OpenButtonModule.Position and Container then
             Container.Position = OpenButtonModule.Position

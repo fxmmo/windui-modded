@@ -1645,6 +1645,9 @@ return function(Config)
 
 	if Window.OpenButtonMain and Window.OpenButtonMain.Button then
 		Creator.AddSignal(Window.OpenButtonMain.Button.TextButton.MouseButton1Click, function()
+			if Window.OpenButtonMain.HideDragButton then
+				return
+			end
 			-- OpenButtonContainer.Visible = false
 			--Window.OpenButtonMain:Visible(false)
 			Window:Open()

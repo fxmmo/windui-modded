@@ -53,3 +53,17 @@ local button = WindUI:AddFloatingButton({
 ```
 
 A instância retornada possui `SetPosition`, `SetVisible`, `SetDraggable`, `Edit` e `Destroy`. O alias `WindUI:CreateFloatingButton(config)` também está disponível. Consulte [docs/FLOATING_BUTTONS.md](docs/FLOATING_BUTTONS.md) para a API completa.
+
+### OpenButton sem botão de arraste
+
+Para esconder o ícone visual de arraste do botão que abre a janela, use `HideDragButton = true` na configuração do `OpenButton`. Nesse modo, todo o botão funciona como um botão flutuante: um clique ou toque abre a janela; pressionar e mover arrasta o próprio OpenButton sem abrir a janela ao soltar.
+
+```lua
+local window = WindUI:CreateWindow({
+    Title = "Minha janela",
+    OpenButton = {
+        Enabled = true,
+        HideDragButton = true,
+    },
+})
+```
