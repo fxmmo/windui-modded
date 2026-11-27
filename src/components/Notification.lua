@@ -139,12 +139,12 @@ function NotificationModule.New(Config)
 	end
 
 	local Duration = Creator.NewRoundFrame(NotificationModule.UICorner, "Squircle", {
-		Size = UDim2.new(1, 0, 0, 3),
-		Position = UDim2.new(0, 0, 1, -3),
+		Size = UDim2.new(0, 0, 1, 0),
 		ThemeTag = {
 			ImageTransparency = "NotificationDurationTransparency",
 			ImageColor3 = "NotificationDuration",
 		},
+		--Visible = false,
 	})
 
 	local TextContainer = New("Frame", {
@@ -218,7 +218,30 @@ function NotificationModule.New(Config)
 				ImageTransparency = "Notification2Transparency",
 			},
 		}),
-			New("ImageLabel", {
+		New("Frame", {
+			Size = UDim2.new(1, 0, 1, 0),
+			BackgroundTransparency = 1,
+			Name = "DurationFrame",
+		}, {
+			--[[Creator.NewRoundFrame(NotificationModule.UICorner, "SquircleOutline", {
+				Size = UDim2.new(1, 0, 1, 0),
+				ImageTransparency = 0.8,
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.new(0.5, 0, 0.5, 0),
+			}),]]
+			New("Frame", {
+				Size = UDim2.new(1, 0, 1, 0), -- 0,0,1,0
+				BackgroundTransparency = 1,
+				ClipsDescendants = true,
+			}, {
+				Duration,
+			}),
+
+			-- New("UICorner", {
+			--     CornerRadius = UDim.new(0,NotificationModule.UICorner),
+			-- })
+		}),
+		New("ImageLabel", {
 			Name = "Background",
 			Image = Notification.Background,
 			BackgroundTransparency = 1,
@@ -232,11 +255,10 @@ function NotificationModule.New(Config)
 			}),
 		}),
 
-			TextContainer,
-			Icon,
-			CloseButton,
-			Duration,
-		})
+		TextContainer,
+		Icon,
+		CloseButton,
+	})
 
 	local MainContainer = New("Frame", {
 		BackgroundTransparency = 1,
@@ -273,11 +295,11 @@ function NotificationModule.New(Config)
 		):Play()
 		Tween(Main, 0.45, { Position = UDim2.new(0, 0, 1, 0) }, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
 		if Notification.Duration then
-			Duration.Size = UDim2.new(1, 0, 0, 3)
+			Duration.Size = UDim2.new(0, Main.DurationFrame.AbsoluteSize.X, 1, 0)
 			Tween(
-				Duration,
+				Main.DurationFrame.Frame,
 				Notification.Duration,
-				{ Size = UDim2.new(0, 0, 0, 3) },
+				{ Size = UDim2.new(0, 0, 1, 0) },
 				Enum.EasingStyle.Linear,
 				Enum.EasingDirection.InOut
 			):Play()
