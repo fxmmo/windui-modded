@@ -711,11 +711,10 @@ return function(Config)
 		},
 	})
 
-	Window.UIElements.Main = New("CanvasGroup", {
+	Window.UIElements.Main = New("Frame", {
 		Size = UDim2.new(Window.Size.X.Scale, Window.Size.X.Offset, 0, 0),
 		Position = Window.Position,
 		BackgroundTransparency = 1,
-		GroupTransparency = 1,
 		Parent = Config.Parent,
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Active = true,
@@ -1331,18 +1330,12 @@ return function(Config)
 
 			task.wait(0.06)
 			Window.Closed = false
-			Window.UIElements.Main.Visible = true
-			Window.UIElements.Main.Main.Visible = true
-			Window.UIElements.Main.GroupTransparency = 1
 
 			Window.UIElements.Main.Size = UDim2.new(Window.Size.X.Scale, Window.Size.X.Offset, 0, 100)
 
 			Tween(Window.UIElements.Main, 0.8, {
 				--GroupTransparency = 0,
 				Size = Window.Size,
-			}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
-			Tween(Window.UIElements.Main, 0.45, {
-				GroupTransparency = 0,
 			}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
 
 			if Window.UIElements.BackgroundGradient then
@@ -1436,13 +1429,15 @@ return function(Config)
 
 		Config.WindUI:ToggleAcrylic(false)
 
+		if Window.UIElements.Main and Window.UIElements.Main:WaitForChild("Main") then
+			Window.UIElements.Main.Main.Visible = false
+		end
+
 		Window.CanDropdown = false
 		Window.Closed = true
 
-		Tween(Window.UIElements.Main, 0.4, {
-			GroupTransparency = 1,
-		}, Enum.EasingStyle.Quint, Enum.EasingDirection.In):Play()
 		Tween(Window.UIElements.Main, 0.9, {
+			--GroupTransparency = 1,
 			Size = UDim2.new(Window.Size.X.Scale, Window.Size.X.Offset, 0, 0),
 		}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out):Play()
 		if Window.UIElements.BackgroundGradient then
@@ -1501,7 +1496,6 @@ return function(Config)
 				return
 			end
 
-			Window.UIElements.Main.Main.Visible = false
 			Window.UIElements.Main.Visible = false
 
 			if Window.OpenButtonMain and not Window.Destroyed and not Window.IsPC and Window.IsOpenButtonEnabled then

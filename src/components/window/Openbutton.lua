@@ -10,6 +10,34 @@ local cloneref = (cloneref or clonereference or function(instance) return instan
 
 local UserInputService = cloneref(game:GetService("UserInputService"))
 
+local function clampToViewport(position, button)
+    local Camera = workspace.CurrentCamera
+    if not Camera then
+        return position
+    end
+
+    local ViewportSize = Camera.ViewportSize
+    local ButtonSize = button.AbsoluteSize
+    local AnchorPoint = button.AnchorPoint
+    local TargetPosition = Vector2.new(
+        position.X.Scale * ViewportSize.X + position.X.Offset,
+        position.Y.Scale * ViewportSize.Y + position.Y.Offset
+    )
+    local Minimum = Vector2.new(
+        ButtonSize.X * AnchorPoint.X,
+        ButtonSize.Y * AnchorPoint.Y
+    )
+    local Maximum = Vector2.new(
+        ViewportSize.X - ButtonSize.X * (1 - AnchorPoint.X),
+        ViewportSize.Y - ButtonSize.Y * (1 - AnchorPoint.Y)
+    )
+
+    return UDim2.fromOffset(
+        math.clamp(TargetPosition.X, Minimum.X, math.max(Minimum.X, Maximum.X)),
+        math.clamp(TargetPosition.Y, Minimum.Y, math.max(Minimum.Y, Maximum.Y))
+    )
+end
+
 
 function OpenButton.New(Window)
     local OpenButtonMain = {
@@ -200,7 +228,7 @@ function OpenButton.New(Window)
     local PressStart
     local PressMoved = false
     local ClickTolerance = 8
-    local DragModule = Creator.Drag(Container)
+    local DragModule = Creator.Drag(Container, nil, nil, clampToViewport)
 
     Creator.AddSignal(Button.TextButton.InputBegan, function(Input)
         if not HideDragButton then return end
@@ -250,7 +278,7 @@ function OpenButton.New(Window)
         if HideDragButton then
             if DragModule then DragModule:Set(false) end
             if not BodyDragModule then
-                BodyDragModule = Creator.Drag(Container, { Container, Button.TextButton })
+                BodyDragModule = Creator.Drag(Container, { Container, Button.TextButton }, nil, clampToViewport)
             end
             BodyDragModule:Set(CanDrag)
         else

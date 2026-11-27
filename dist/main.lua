@@ -29731,6 +29731,34 @@ local ae=(cloneref or clonereference or function(ae)return ae end)
 
 local af=ae(game:GetService"UserInputService")
 
+local function clampToViewport(ag,ah)
+local ai=workspace.CurrentCamera
+if not ai then
+return ag
+end
+
+local aj=ai.ViewportSize
+local ak=ah.AbsoluteSize
+local al=ah.AnchorPoint
+local am=Vector2.new(
+ag.X.Scale*aj.X+ag.X.Offset,
+ag.Y.Scale*aj.Y+ag.Y.Offset
+)
+local an=Vector2.new(
+ak.X*al.X,
+ak.Y*al.Y
+)
+local ao=Vector2.new(
+aj.X-ak.X*(1-al.X),
+aj.Y-ak.Y*(1-al.Y)
+)
+
+return UDim2.fromOffset(
+math.clamp(am.X,an.X,math.max(an.X,ao.X)),
+math.clamp(am.Y,an.Y,math.max(an.Y,ao.Y))
+)
+end
+
 
 function aa.New(ag)
 local ah={
@@ -29921,7 +29949,7 @@ local at
 local au
 local av=false
 local aw=8
-local ax=ab.Drag(an)
+local ax=ab.Drag(an,nil,nil,clampToViewport)
 
 ab.AddSignal(ap.TextButton.InputBegan,function(ay)
 if not ar then return end
@@ -29971,7 +29999,7 @@ am.Visible=not ar
 if ar then
 if ax then ax:Set(false)end
 if not as then
-as=ab.Drag(an,{an,ap.TextButton})
+as=ab.Drag(an,{an,ap.TextButton},nil,clampToViewport)
 end
 as:Set(aq)
 else
@@ -38334,11 +38362,10 @@ TextColor3="WindowTopbarTitle",
 },
 })
 
-aw.UIElements.Main=ao("CanvasGroup",{
+aw.UIElements.Main=ao("Frame",{
 Size=UDim2.new(aw.Size.X.Scale,aw.Size.X.Offset,0,0),
 Position=aw.Position,
 BackgroundTransparency=1,
-GroupTransparency=1,
 Parent=av.Parent,
 AnchorPoint=Vector2.new(0.5,0.5),
 Active=true,
@@ -38954,18 +38981,12 @@ end
 
 task.wait(0.06)
 aw.Closed=false
-aw.UIElements.Main.Visible=true
-aw.UIElements.Main.Main.Visible=true
-aw.UIElements.Main.GroupTransparency=1
 
 aw.UIElements.Main.Size=UDim2.new(aw.Size.X.Scale,aw.Size.X.Offset,0,100)
 
 ap(aw.UIElements.Main,0.8,{
 
 Size=aw.Size,
-},Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
-ap(aw.UIElements.Main,0.45,{
-GroupTransparency=0,
 },Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 
 if aw.UIElements.BackgroundGradient then
@@ -39059,13 +39080,15 @@ end
 
 av.WindUI:ToggleAcrylic(false)
 
+if aw.UIElements.Main and aw.UIElements.Main:WaitForChild"Main"then
+aw.UIElements.Main.Main.Visible=false
+end
+
 aw.CanDropdown=false
 aw.Closed=true
 
-ap(aw.UIElements.Main,0.4,{
-GroupTransparency=1,
-},Enum.EasingStyle.Quint,Enum.EasingDirection.In):Play()
 ap(aw.UIElements.Main,0.9,{
+
 Size=UDim2.new(aw.Size.X.Scale,aw.Size.X.Offset,0,0),
 },Enum.EasingStyle.Quint,Enum.EasingDirection.Out):Play()
 if aw.UIElements.BackgroundGradient then
@@ -39124,7 +39147,6 @@ if not aw.Closed then
 return
 end
 
-aw.UIElements.Main.Main.Visible=false
 aw.UIElements.Main.Visible=false
 
 if aw.OpenButtonMain and not aw.Destroyed and not aw.IsPC and aw.IsOpenButtonEnabled then
