@@ -25483,15 +25483,15 @@ function p.SetDraggable(v)
 p.CanDraggable=v
 end
 
-function p.Drag(v,x,z)
-local A=m.GenerateGUID()
+function p.Drag(v,x,z,A)
+local B=m.GenerateGUID()
 
-local B
-local C=false
-local F,G
-local H
+local C
+local F=false
+local G,H
+local J
 
-local J={
+local L={
 CanDraggable=true,
 }
 
@@ -25499,86 +25499,90 @@ if not x or typeof(x)~="table"then
 x={v}
 end
 
-local function update(L)
-if not C or not J.CanDraggable then
+local function update(M)
+if not F or not L.CanDraggable then
 return
 end
 
-local M=L.Position-F
+local N=M.Position-G
+local O=UDim2.new(
+H.X.Scale,
+H.X.Offset+N.X,
+H.Y.Scale,
+H.Y.Offset+N.Y
+)
+if A and typeof(A)=="function"then
+O=A(O,v)
+end
 p.Tween(v,0.02,{
-Position=UDim2.new(
-G.X.Scale,
-G.X.Offset+M.X,
-G.Y.Scale,
-G.Y.Offset+M.Y
-),
+Position=O,
 }):Play()
 end
 
-for L,M in pairs(x)do
-M.InputBegan:Connect(function(N)
-if not J.CanDraggable or C then
+for M,N in pairs(x)do
+N.InputBegan:Connect(function(O)
+if not L.CanDraggable or F then
 return
 end
 
 if
-N.UserInputType==Enum.UserInputType.MouseButton1
-or N.UserInputType==Enum.UserInputType.Touch
+O.UserInputType==Enum.UserInputType.MouseButton1
+or O.UserInputType==Enum.UserInputType.Touch
 then
-if m and m.CurrentInput and m.CurrentInput~=A then
+if m and m.CurrentInput and m.CurrentInput~=B then
 return
 end
 
-m.CurrentInput=A
+m.CurrentInput=B
 
-C=true
-H=N
-B=M
-F=N.Position
-G=v.Position
+F=true
+J=O
+C=N
+G=O.Position
+H=v.Position
 
 if z and typeof(z)=="function"then
-z(true,B)
+z(true,C)
 end
 end
 end)
 end
 
-e.InputChanged:Connect(function(L)
-if not C then
+e.InputChanged:Connect(function(M)
+if not F then
 return
 end
-if m.CurrentInput and m.CurrentInput~=A then
+if m.CurrentInput and m.CurrentInput~=B then
 return
 end
 
-if H.UserInputType==Enum.UserInputType.MouseButton1 then
-if L.UserInputType==Enum.UserInputType.MouseMovement then
-update(L)
+if J.UserInputType==Enum.UserInputType.MouseButton1 then
+if M.UserInputType==Enum.UserInputType.MouseMovement then
+update(M)
 end
-elseif H.UserInputType==Enum.UserInputType.Touch then
-if L==H then
-update(L)
+elseif J.UserInputType==Enum.UserInputType.Touch then
+if M==J then
+update(M)
 end
 end
 end)
 
-e.InputEnded:Connect(function(L)
-if not C or m.CurrentInput~=A then
+e.InputEnded:Connect(function(M)
+if not F or m.CurrentInput~=B then
 return
 end
 
 if
-L==H
+M==J
 or(
-H.UserInputType==Enum.UserInputType.MouseButton1
-and L.UserInputType==Enum.UserInputType.MouseButton1
+J.UserInputType==Enum.UserInputType.MouseButton1
+and M.UserInputType==Enum.UserInputType.MouseButton1
 )
 then
 m.CurrentInput=nil
-C=false
-H=nil
-B=nil
+F=false
+J=nil
+C=nil
 
 if z and typeof(z)=="function"then
 z(false,nil)
@@ -25586,11 +25590,11 @@ end
 end
 end)
 
-function J.Set(L,M)
-J.CanDraggable=M
+function L.Set(M,N)
+L.CanDraggable=N
 end
 
-return J
+return L
 end
 
 l.Init(r,"Icon")
@@ -28291,6 +28295,34 @@ local ai=type(af)=="number"and af or 52
 return UDim2.fromOffset(ag or ai,ah or ai)
 end
 
+local function clampToViewport(af,ag)
+local ah=workspace.CurrentCamera
+if not ah then
+return af
+end
+
+local ai=ah.ViewportSize
+local aj=ag.AbsoluteSize
+local ak=ag.AnchorPoint
+local al=Vector2.new(
+af.X.Scale*ai.X+af.X.Offset,
+af.Y.Scale*ai.Y+af.Y.Offset
+)
+local am=Vector2.new(
+aj.X*ak.X,
+aj.Y*ak.Y
+)
+local an=Vector2.new(
+ai.X-aj.X*(1-ak.X),
+ai.Y-aj.Y*(1-ak.Y)
+)
+
+return UDim2.fromOffset(
+math.clamp(al.X,am.X,math.max(am.X,an.X)),
+math.clamp(al.Y,am.Y,math.max(am.Y,an.Y))
+)
+end
+
 function aa.New(af,ag,ah)
 af=af or{}
 local ai=af.Style or{}
@@ -28419,7 +28451,7 @@ local p=8
 
 local r=ab.Drag(g,nil,function(r)
 h.Dragging=r
-end)
+end,clampToViewport)
 h.DragModule=r
 
 ab.AddSignal(g.MouseEnter,function()

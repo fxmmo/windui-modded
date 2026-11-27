@@ -25,6 +25,34 @@ local function resolveSize(size, width, height)
 	return UDim2.fromOffset(width or defaultSize, height or defaultSize)
 end
 
+local function clampToViewport(position, button)
+	local Camera = workspace.CurrentCamera
+	if not Camera then
+		return position
+	end
+
+	local ViewportSize = Camera.ViewportSize
+	local ButtonSize = button.AbsoluteSize
+	local AnchorPoint = button.AnchorPoint
+	local TargetPosition = Vector2.new(
+		position.X.Scale * ViewportSize.X + position.X.Offset,
+		position.Y.Scale * ViewportSize.Y + position.Y.Offset
+	)
+	local Minimum = Vector2.new(
+		ButtonSize.X * AnchorPoint.X,
+		ButtonSize.Y * AnchorPoint.Y
+	)
+	local Maximum = Vector2.new(
+		ViewportSize.X - ButtonSize.X * (1 - AnchorPoint.X),
+		ViewportSize.Y - ButtonSize.Y * (1 - AnchorPoint.Y)
+	)
+
+	return UDim2.fromOffset(
+		math.clamp(TargetPosition.X, Minimum.X, math.max(Minimum.X, Maximum.X)),
+		math.clamp(TargetPosition.Y, Minimum.Y, math.max(Minimum.Y, Maximum.Y))
+	)
+end
+
 function FloatingButton.New(Config, Parent, WindUI)
 	Config = Config or {}
 	local Style = Config.Style or {}
@@ -153,7 +181,7 @@ function FloatingButton.New(Config, Parent, WindUI)
 
 	local DragModule = Creator.Drag(Button, nil, function(dragging)
 		Floating.Dragging = dragging
-	end)
+	end, clampToViewport)
 	Floating.DragModule = DragModule
 
 	Creator.AddSignal(Button.MouseEnter, function()
